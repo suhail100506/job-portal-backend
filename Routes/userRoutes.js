@@ -8,16 +8,14 @@ const {
     deleteUser,
     updateUserRole
 } = require('../Controller/userController');
-const { protect, authorize } = require('../Middleware/AuthMiddleware');
+const { isAuthenticated, authorizeRoles } = require('../Middleware/AuthMiddleware');
 
-// Protected routes
-router.get('/profile', protect, getUserProfile);
-router.put('/profile', protect, updateUserProfile);
+router.get('/profile', isAuthenticated, getUserProfile);
+router.put('/profile', isAuthenticated, updateUserProfile);
 
-// Admin only routes
-router.get('/', protect, authorize('admin'), getAllUsers);
-router.get('/:id', protect, authorize('admin'), getUserById);
-router.delete('/:id', protect, authorize('admin'), deleteUser);
-router.put('/:id/role', protect, authorize('admin'), updateUserRole);
+router.get('/', isAuthenticated, authorizeRoles('admin'), getAllUsers);
+router.get('/:id', isAuthenticated, authorizeRoles('admin'), getUserById);
+router.delete('/:id', isAuthenticated, authorizeRoles('admin'), deleteUser);
+router.put('/:id/role', isAuthenticated, authorizeRoles('admin'), updateUserRole);
 
 module.exports = router;

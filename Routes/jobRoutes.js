@@ -8,16 +8,13 @@ const {
     deleteJob,
     searchJobs
 } = require('../Controller/jobController');
-const { protect, authorize } = require('../Middleware/AuthMiddleware');
+const { isAuthenticated, authorizeRoles } = require('../Middleware/AuthMiddleware');
 
-// Public routes
 router.get('/', getAllJobs);
 router.get('/search', searchJobs);
 router.get('/:id', getJobById);
-
-// Protected routes
-router.post('/', protect, authorize('employer', 'admin'), createJob);
-router.put('/:id', protect, authorize('employer', 'admin'), updateJob);
-router.delete('/:id', protect, authorize('employer', 'admin'), deleteJob);
+router.post('/', isAuthenticated, authorizeRoles('recruiter', 'admin'), createJob);
+router.put('/:id', isAuthenticated, authorizeRoles('recruiter', 'admin'), updateJob);
+router.delete('/:id', isAuthenticated, authorizeRoles('recruiter', 'admin'), deleteJob);
 
 module.exports = router;

@@ -1,10 +1,9 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
+const User = require('../models/User');
 
-// Verify if user is authenticated
+
 exports.isAuthenticated = async (req, res, next) => {
     try {
-        // Get token from cookie or authorization header
         let token;
 
         if (req.cookies.token) {
@@ -20,10 +19,8 @@ exports.isAuthenticated = async (req, res, next) => {
             });
         }
 
-        // Verify token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        // Get user from token
         req.user = await User.findById(decoded.id);
 
         if (!req.user) {
@@ -42,7 +39,6 @@ exports.isAuthenticated = async (req, res, next) => {
     }
 };
 
-// Authorize specific roles
 exports.authorizeRoles = (...roles) => {
     return (req, res, next) => {
         if (!roles.includes(req.user.role)) {

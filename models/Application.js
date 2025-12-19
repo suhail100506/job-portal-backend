@@ -16,7 +16,7 @@ const applicationSchema = new mongoose.Schema({
         required: [true, 'Cover letter is required']
     },
     resume: {
-        type: String, // File path or URL
+        type: String,
         required: false
     },
     status: {
@@ -28,7 +28,7 @@ const applicationSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Ensure a user can only apply once per job
+
 applicationSchema.index({ job: 1, applicant: 1 }, { unique: true });
 
 module.exports = mongoose.model('Application', applicationSchema);
