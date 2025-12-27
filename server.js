@@ -19,6 +19,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use('/uploads', express.static('uploads'));
 
 app.use('/api/auth', require('./Routes/authRoutes'));
 app.use('/api/jobs', require('./Routes/jobRoutes'));
