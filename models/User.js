@@ -25,10 +25,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['jobseeker', 'recruiter', 'admin'],
         default: 'jobseeker'
-    },
-    phone: {
-        type: String,
-        trim: true
     }
 }, {
     timestamps: true
