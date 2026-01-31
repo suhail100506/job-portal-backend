@@ -41,7 +41,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create job
-router.post('/', isAuthenticated, authorizeRoles('recruiter', 'admin'), async (req, res) => {
+router.post('/', isAuthenticated, authorizeRoles('recruiter', 'employer', 'admin'), async (req, res) => {
     try {
         const job = new Job({ ...req.body, postedBy: req.user.id });
         await job.save();
@@ -52,7 +52,7 @@ router.post('/', isAuthenticated, authorizeRoles('recruiter', 'admin'), async (r
 });
 
 // Update job
-router.put('/:id', isAuthenticated, authorizeRoles('recruiter', 'admin'), async (req, res) => {
+router.put('/:id', isAuthenticated, authorizeRoles('recruiter', 'employer', 'admin'), async (req, res) => {
     try {
         const job = await Job.findById(req.params.id);
         if (!job) return res.status(404).json({ message: 'Job not found' });
@@ -69,7 +69,7 @@ router.put('/:id', isAuthenticated, authorizeRoles('recruiter', 'admin'), async 
 });
 
 // Delete job
-router.delete('/:id', isAuthenticated, authorizeRoles('recruiter', 'admin'), async (req, res) => {
+router.delete('/:id', isAuthenticated, authorizeRoles('recruiter', 'employer', 'admin'), async (req, res) => {
     try {
         const job = await Job.findById(req.params.id);
         if (!job) return res.status(404).json({ message: 'Job not found' });

@@ -68,7 +68,7 @@ router.delete('/:id', isAuthenticated, async (req, res) => {
 });
 
 // Get All Applications (Admin/Recruiter)
-router.get('/', isAuthenticated, authorizeRoles('recruiter', 'admin'), async (req, res) => {
+router.get('/', isAuthenticated, authorizeRoles('recruiter', 'employer', 'admin'), async (req, res) => {
     try {
         const apps = await Application.find().populate('applicant', 'name email').populate('job', 'title company').sort({ createdAt: -1 });
         res.status(200).json(apps);
@@ -78,7 +78,7 @@ router.get('/', isAuthenticated, authorizeRoles('recruiter', 'admin'), async (re
 });
 
 // Get Applications for a Job (Admin/Recruiter)
-router.get('/job/:jobId', isAuthenticated, authorizeRoles('recruiter', 'admin'), async (req, res) => {
+router.get('/job/:jobId', isAuthenticated, authorizeRoles('recruiter', 'employer', 'admin'), async (req, res) => {
     try {
         const apps = await Application.find({ job: req.params.jobId }).populate('applicant', 'name email phone').sort({ createdAt: -1 });
         res.status(200).json(apps);
@@ -88,7 +88,7 @@ router.get('/job/:jobId', isAuthenticated, authorizeRoles('recruiter', 'admin'),
 });
 
 // Update Application Status
-router.put('/:id/status', isAuthenticated, authorizeRoles('recruiter', 'admin'), async (req, res) => {
+router.put('/:id/status', isAuthenticated, authorizeRoles('recruiter', 'employer', 'admin'), async (req, res) => {
     try {
         const app = await Application.findByIdAndUpdate(req.params.id, { status: req.body.status }, { new: true });
         if (!app) return res.status(404).json({ message: 'Not found' });
