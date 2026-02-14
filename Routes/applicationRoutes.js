@@ -3,7 +3,11 @@ const router = express.Router();
 const Application = require('../models/Application');
 const Job = require('../models/Job');
 const { isAuthenticated, authorizeRoles } = require('../Middleware/AuthMiddleware');
-const upload = require('../Middleware/uploadMiddleware');
+
+// Use cloudinaryConfig for production, uploadMiddleware for local development
+const upload = process.env.NODE_ENV === 'production' 
+    ? require('../Middleware/cloudinaryConfig')
+    : require('../Middleware/uploadMiddleware');
 
 // Create Application
 router.post('/', isAuthenticated, upload.single('resume'), async (req, res) => {
@@ -15,11 +19,15 @@ router.post('/', isAuthenticated, upload.single('resume'), async (req, res) => {
         const existing = await Application.findOne({ job: jobId, applicant: req.user.id });
         if (existing) return res.status(400).json({ message: 'Already applied' });
 
+        // For Cloudinary: req.file.path contains the full URL
+        // For local storage: req.file.path contains relative path
+        const resumePath = req.file ? req.file.path : null;
+
         const app = new Application({
             job: jobId,
             applicant: req.user.id,
             coverLetter,
-            resume: req.file ? req.file.path : null
+            resume: resumePath
         });
 
         await app.save();
