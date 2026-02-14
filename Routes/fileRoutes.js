@@ -1,10 +1,29 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
-const { isAuthenticated } = require('../Middleware/AuthMiddleware');
+const jwt = require('jsonwebtoken');
+
+// Middleware to verify token from query or header
+const verifyTokenForDownload = (req, res, next) => {
+    try {
+        // Try to get token from query parameter or authorization header
+        const token = req.query.token || req.headers.authorization?.split(' ')[1] || req.cookies.token;
+        
+        if (!token) {
+            return res.status(401).json({ message: 'Authentication required' });
+        }
+
+        // Verify token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded;
+        next();
+    } catch (error) {
+        return res.status(401).json({ message: 'Invalid or expired token' });
+    }
+};
 
 // Proxy route to serve files with proper headers
-router.get('/download/:type/:filename', isAuthenticated, async (req, res) => {
+router.get('/download/:type/:filename', verifyTokenForDownload, async (req, res) => {
     try {
         const { type, filename } = req.params;
         const fileUrl = req.query.url;
