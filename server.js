@@ -8,7 +8,7 @@ const app = express();
 connectDB();
 
 const corsOptions = {
-    origin: ['https://job-portal-frontend-je9k.vercel.app', 'http://localhost:4173'],
+    origin: ['https://job-portal-frontend-je9k.vercel.app', 'http://localhost:4173', 'http://localhost:5173'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],

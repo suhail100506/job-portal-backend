@@ -47,6 +47,11 @@ router.post('/', isAuthenticated, authorizeRoles('recruiter', 'employer', 'admin
         await job.save();
         res.status(201).json({ message: 'Job posted', job });
     } catch (error) {
+        console.error('Job creation error:', error);
+        if (error.name === 'ValidationError') {
+            const errors = Object.values(error.errors).map(err => err.message);
+            return res.status(400).json({ message: 'Validation error', errors: errors.join(', ') });
+        }
         res.status(500).json({ message: 'Error creating job', error: error.message });
     }
 });
