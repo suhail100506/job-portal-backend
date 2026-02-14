@@ -13,6 +13,18 @@ router.get('/download/:type/:filename', isAuthenticated, async (req, res) => {
             return res.status(400).json({ message: 'File URL is required' });
         }
 
+        // Decode the filename
+        const decodedFilename = decodeURIComponent(filename);
+        
+        // Extract extension from URL if filename doesn't have one
+        let finalFilename = decodedFilename;
+        if (!decodedFilename.match(/\.(pdf|doc|docx)$/i)) {
+            const urlExtension = fileUrl.match(/\.(pdf|doc|docx)(\?|$)/i);
+            if (urlExtension) {
+                finalFilename = `${decodedFilename}${urlExtension[1]}`;
+            }
+        }
+
         // Check if it's a Cloudinary URL
         if (fileUrl.startsWith('http')) {
             // Fetch file from Cloudinary
@@ -24,17 +36,18 @@ router.get('/download/:type/:filename', isAuthenticated, async (req, res) => {
 
             // Determine content type based on file extension
             let contentType = 'application/octet-stream';
-            if (filename.endsWith('.pdf')) {
+            const extension = finalFilename.toLowerCase();
+            if (extension.endsWith('.pdf')) {
                 contentType = 'application/pdf';
-            } else if (filename.endsWith('.doc')) {
+            } else if (extension.endsWith('.doc')) {
                 contentType = 'application/msword';
-            } else if (filename.endsWith('.docx')) {
+            } else if (extension.endsWith('.docx')) {
                 contentType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
             }
 
-            // Set headers for download
+            // Set headers for download with proper filename encoding
             res.setHeader('Content-Type', contentType);
-            res.setHeader('Content-Disposition', `${type === 'view' ? 'inline' : 'attachment'}; filename="${filename}"`);
+            res.setHeader('Content-Disposition', `${type === 'view' ? 'inline' : 'attachment'}; filename="${finalFilename}"; filename*=UTF-8''${encodeURIComponent(finalFilename)}`);
             
             // Pipe the file stream to response
             response.data.pipe(res);
@@ -50,16 +63,17 @@ router.get('/download/:type/:filename', isAuthenticated, async (req, res) => {
 
             // Determine content type
             let contentType = 'application/octet-stream';
-            if (filePath.endsWith('.pdf')) {
+            const extension = finalFilename.toLowerCase();
+            if (extension.endsWith('.pdf')) {
                 contentType = 'application/pdf';
-            } else if (filePath.endsWith('.doc')) {
+            } else if (extension.endsWith('.doc')) {
                 contentType = 'application/msword';
-            } else if (filePath.endsWith('.docx')) {
+            } else if (extension.endsWith('.docx')) {
                 contentType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
             }
 
             res.setHeader('Content-Type', contentType);
-            res.setHeader('Content-Disposition', `${type === 'view' ? 'inline' : 'attachment'}; filename="${filename}"`);
+            res.setHeader('Content-Disposition', `${type === 'view' ? 'inline' : 'attachment'}; filename="${finalFilename}"; filename*=UTF-8''${encodeURIComponent(finalFilename)}`);
             
             const fileStream = fs.createReadStream(filePath);
             fileStream.pipe(res);
