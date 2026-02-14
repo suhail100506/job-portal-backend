@@ -25,6 +25,7 @@ app.use('/api/auth', require('./Routes/authRoutes'));
 app.use('/api/jobs', require('./Routes/jobRoutes'));
 app.use('/api/applications', require('./Routes/applicationRoutes'));
 app.use('/api/users', require('./Routes/userRoutes'));
+app.use('/api/files', require('./Routes/fileRoutes'));
 
 app.get('/', (req, res) => {
     res.json({ success: true, message: 'Job Portal API is running' });

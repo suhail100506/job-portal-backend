@@ -12,14 +12,19 @@ cloudinary.config({
 // Cloudinary storage for Multer
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
-    params: {
-        folder: 'job-portal-resumes',
-        allowed_formats: ['pdf', 'doc', 'docx'],
-        resource_type: 'raw', // For non-image files like PDFs
-        public_id: (req, file) => {
-            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-            return `resume-${uniqueSuffix}`;
-        }
+    params: async (req, file) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const extension = file.originalname.split('.').pop();
+        
+        return {
+            folder: 'job-portal-resumes',
+            allowed_formats: ['pdf', 'doc', 'docx'],
+            resource_type: 'raw',
+            public_id: `resume-${uniqueSuffix}`,
+            format: extension, // Preserve file extension
+            // Store original filename in metadata
+            context: `original_filename=${file.originalname}`
+        };
     }
 });
 

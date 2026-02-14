@@ -22,12 +22,14 @@ router.post('/', isAuthenticated, upload.single('resume'), async (req, res) => {
         // For Cloudinary: req.file.path contains the full URL
         // For local storage: req.file.path contains relative path
         const resumePath = req.file ? req.file.path : null;
+        const resumeFilename = req.file ? req.file.originalname : null;
 
         const app = new Application({
             job: jobId,
             applicant: req.user.id,
             coverLetter,
-            resume: resumePath
+            resume: resumePath,
+            resumeFilename: resumeFilename
         });
 
         await app.save();

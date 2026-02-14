@@ -19,6 +19,10 @@ const applicationSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    resumeFilename: {
+        type: String,
+        required: false
+    },
     status: {
         type: String,
         enum: ['pending', 'reviewed', 'shortlisted', 'rejected', 'accepted'],
