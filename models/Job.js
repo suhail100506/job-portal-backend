@@ -30,12 +30,12 @@ const jobSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ['Full-time', 'Part-time', 'Contract', 'Internship', 'Remote'],
-        default: 'Full-time'
+        enum: ['Full Time', 'Part Time', 'Contract', 'Internship', 'Remote'],
+        default: 'Full Time'
     },
     category: {
         type: String,
-        enum: ['IT', 'Finance', 'Marketing', 'Sales', 'Healthcare', 'Education', 'Engineering', 'Other'],
+        enum: ['Development', 'Design', 'Marketing', 'Project Management', 'Customer Services', 'Accounting / Finance', 'Sales', 'Healthcare', 'Education', 'Engineering', 'Other'],
         default: 'Other'
     },
     postedBy: {
