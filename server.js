@@ -7,18 +7,19 @@ const app = express();
 
 connectDB();
 
-const corsOptions = {
-    origin: ['https://job-portal-frontend-je9k.vercel.app', 'http://localhost:4173'],
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    exposedHeaders: ['Content-Type', 'Authorization'],
-    optionsSuccessStatus: 200,
-    preflightContinue: false
-};
+/* 🔥 VERY IMPORTANT: CORS MUST BE FIRST */
+app.use(cors({
+    origin: [
+        'https://job-portal-frontend-je9k.vercel.app',
+        'http://localhost:5173',
+        'http://localhost:4173'
+    ],
+    credentials: true
+}));
 
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+// 🔥 Handle preflight explicitly
+app.options('*', cors());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
